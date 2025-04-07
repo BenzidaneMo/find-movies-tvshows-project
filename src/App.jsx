@@ -4,13 +4,13 @@ import './App.css'
 function App() {
   
   return (
-    <>
-      <h1>React Router Dom </h1>
+    <div className="flex flex-col gap-4 items-center justify-center h-screen bg-gray-100">
+      <h1 className='text-2xl font-bold'>React Router Dom </h1>
       
       <Card name="Avatar" />
       <Card name="Avenger" />
       <Card name="Iron Man" />
-    </>
+    </div>
   )
 }
 
@@ -33,10 +33,12 @@ const Card = ({name}) => {
   console.log(hasLiked)
 
   return (
-    <div className="card">
-      <h2>{name} {hasLiked ? '❤️' : '👎'}</h2>
-      <button onClick={handleLikeClick}>{hasLiked ? 'Liked' : 'Like'}</button>
-      <p>Number of Likes: {clickNumber}</p>
+    <div className="border-2 border-gray-300 rounded-lg p-4 bg-white shadow-md w-1/4">
+      <div className='flex gap-2 justify-between'>
+        <h2 className='font-medium text-lg items-center m-2'>{name} {hasLiked ? '❤️' : '👎'}</h2>
+        <button className='border-1 border-black m-2 rounded-lg p-2 bg-gray-200 w-25 hover:bg-gray-300 cursor-pointer' onClick={handleLikeClick}>{hasLiked ? 'Liked' : 'Like'}</button>
+      </div>
+      <p className='text-sm'>Number of Likes: {clickNumber}</p>
 
     </div>
   )
