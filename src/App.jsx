@@ -1,47 +1,45 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import Search  from './component/Search'
+
 
 function App() {
-  
-  return (
-    <div className="flex flex-col gap-4 items-center justify-center h-screen bg-neutral-300">
-      <h1 className='text-3xl font-bold shadow-violet-700 text-blue-500'>React Router Dom </h1>
-      
-      <Card name="Avatar" />
-      <Card name="Avenger" />
-      <Card name="Iron Man" />
-    </div>
-  )
-}
+  const [searchMovie, setSearchMovie] = useState('')
 
-// eslint-disable-next-line react/prop-types
-const Card = ({name}) => {
-  const [clickNumber, setClickNumber] = useState(0)
-  const [hasLiked, setHasLiked] = useState(false)
-
-  useEffect(() => {
-    console.log(`the number of the movie ${name} has been liked is ${clickNumber}`)
-  }, [hasLiked])
-
-  const handleLikeClick = () => {
-    setHasLiked(prev => !prev)
-    if (!hasLiked) {
-      return setClickNumber((prev) => (prev + 1))
-    }
+  const handlesearchMovie = (e) => {
+    setSearchMovie(e.target.value)
   }
   
-  console.log(hasLiked)
-
   return (
-    <div className="border-2 border-gray-300 rounded-lg p-4 bg-blue-400 shadow-md w-1/4">
-      <div className='flex gap-2 justify-between'>
-        <h2 className='font-medium text-lg items-center m-2'>{name} {hasLiked ? '❤️' : '👎'}</h2>
-        <button className='border-1 border-black m-2 rounded-lg p-2 bg-gray-200 w-25 hover:bg-gray-300 cursor-pointer' onClick={handleLikeClick}>{hasLiked ? 'Liked' : 'Like'}</button>
+    <main>
+      <div className='pattern' />
+      <div className='wrapper'>
+        <header className='mb-30'>
+          <a href="/"><img src="logo.png" alt="logo" className='w-25 mb-10 cursor-pointer' /></a>
+          <img src="hero.png" alt="img displaying movies" />
+          <h1>Find <span className='text-gradient'>Movies</span> You&apos;ll Enjoy Without the Hassle</h1>
+          <Search handlesearchMovie={handlesearchMovie} searchMovie={searchMovie}/>
+        </header>
+        <body>
+          <div className='trending'>
+            <h2 className='mb-10'>Trending</h2>
+            <ul>
+              <li><p>1</p><img src="no-movie.png" alt="title" /></li>
+              <li><p>2</p><img src="no-movie.png" alt="title" /></li>
+              <li><p>3</p><img src="no-movie.png" alt="title" /></li>
+              <li><p>4</p><img src="no-movie.png" alt="title" /></li>
+              <li><p>5</p><img src="no-movie.png" alt="title" /></li>
+              <li><p>6</p><img src="no-movie.png" alt="title" /></li>
+            </ul>
+            
+          </div>
+          <h2>Popular</h2>
+        </body>
       </div>
-      <p className='text-sm text-amber-50'>Number of Likes: {clickNumber}</p>
-
-    </div>
+    </main>
   )
 }
+
+
 
 export default App
