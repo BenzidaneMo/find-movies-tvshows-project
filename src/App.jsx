@@ -34,7 +34,7 @@ const Card = ({name}) => {
 
   return (
     <div className="card">
-      <h2>{name} {hasLiked ? '❤️' : 'NO'}</h2>
+      <h2>{name} {hasLiked ? '❤️' : '👎'}</h2>
       <button onClick={handleLikeClick}>{hasLiked ? 'Liked' : 'Like'}</button>
       <p>Number of Likes: {clickNumber}</p>
 
