@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import Search from './component/Search'
 
@@ -24,6 +24,12 @@ function App() {
   const [discoverMovies, setDiscoverMovies] = useState([])
   // State to store movies fetched from the search endpoint based on the search query
   const [searchedMovies, setSearchedMovies] = useState([])
+  // State to trigger the search when the icon is clicked or Enter is pressed
+  const [isSearchClicked, setIsSearchClicked] = useState(false)
+  // Ref to the Search component's main div
+  const searchRef = useRef(null)
+  // Ref to the search results container
+  const searchResultsRef = useRef(null)
 
   /*
     useEffect hook to fetch trending movies when the component mounts.
@@ -50,7 +56,7 @@ function App() {
 
   /*
     useEffect hook to fetch movies based on the user's search query.
-    It calls the search endpoint whenever the `searching` state changes.
+    It calls the search endpoint whenever the `isSearchClicked` state changes to true.
   */
   useEffect(() => {
     const fetchSearchedMovies = async () => {
@@ -66,16 +72,52 @@ function App() {
       }
     }
 
-    // Only fetch movies if the search query is not empty
-    if (searching) {
+    // Only fetch movies if the search query is not empty and the search icon is clicked
+    if (searching && isSearchClicked) {
       fetchSearchedMovies()
     }
-  }, [searching])
+  }, [searching, isSearchClicked])
 
   // Event handler for search input changes, updates the `searching` state
   const handleSearching = (e) => {
     setSearching(e.target.value)
+    // trigger search on every input change
+    setIsSearchClicked(true)
   }
+
+  // Event handler for when the search icon is clicked or Enter is pressed
+  const handleSearchIconClick = () => {
+    setIsSearchClicked(true)
+  }
+
+  /*
+    useEffect hook to handle clicks outside the search bar or search results.
+    If a click occurs outside these elements, it resets the search state.
+  */
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target) &&
+        searchResultsRef.current &&
+        !searchResultsRef.current.contains(event.target)
+      ) {
+        // Reset search state when clicking outside
+        setIsSearchClicked(false)
+        setSearching('')
+      }
+    }
+
+    // Add event listeners for mouse and touch events
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+
+    // Cleanup event listeners when the component unmounts
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [isSearchClicked]) // Re-run effect if `isSearchClicked` changes
 
   return (
     <main>
@@ -96,12 +138,12 @@ function App() {
             Find <span className='text-gradient'>Movies</span> You&apos;ll Enjoy Without the Hassle
           </h1>
           {/* Search component that passes down the event handler and current search query */}
-          <Search handleSearching={handleSearching} searching={searching} />
+          <Search handleSearching={handleSearching} searching={searching} handleSearchIconClick={handleSearchIconClick} searchRef={searchRef} />
         </header>
         {/* Body section containing search results and trending movies */}
         <body>
           {/* Section for showing the search results */}
-          <div className='searched Movie'>
+          <div className='searched Movie' ref={searchResultsRef}>
             {/* Title showing the current search query if present */}
             <h2 className='mb-5'>
               {searching ? 'Search for : ' : ''} {searching}
@@ -115,7 +157,7 @@ function App() {
                   key={movie.id}
                 >
                   {/* Render the movie poster only if a search query exists */}
-                  {searching ? (
+                  {isSearchClicked ? (
                     <div className='rounded-md'>
                       {/* Movie poster image with rounded corners */}
                       <img
