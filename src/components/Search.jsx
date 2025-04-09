@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 
 const Search = ({ handleSearching, searching, handleSearchIconClick, searchRef }) => {
 
