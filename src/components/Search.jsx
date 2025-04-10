@@ -1,5 +1,5 @@
 
-const Search = ({ handleSearching, searching, handleSearchIconClick, searchRef }) => {
+const Search = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef }) => {
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -19,7 +19,7 @@ const Search = ({ handleSearching, searching, handleSearchIconClick, searchRef }
         <input
           type="text"
           onChange={handleSearching}
-          value={searching}
+          value={searchTerm}
           placeholder='Search through 300+ movies online'
           onKeyDown={handleKeyDown} // Call handleKeyDown on key press
         />
