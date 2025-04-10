@@ -1,6 +1,6 @@
 import Search from './Search'
 
-const Header = ({ handleSearching, searching, handleSearchIconClick, searchRef }) => {
+const Header = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef }) => {
   
     return (
         <header className='mb-30'>
@@ -17,7 +17,7 @@ const Header = ({ handleSearching, searching, handleSearchIconClick, searchRef }
           {/* Search component */}
           <Search
             handleSearching={handleSearching}
-            searching={searching}
+            searchTerm={searchTerm}
             handleSearchIconClick={handleSearchIconClick}
             searchRef={searchRef}
           />
