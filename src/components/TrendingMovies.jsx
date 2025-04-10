@@ -1,52 +1,55 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const TrendingMovies = ({ discoverMovies }) => {
-  // Ref to the list container for trending movies
   const trendingListRef = useRef(null);
-  // State to track the current index of the movie being scrolled into view
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollIntervalRef = useRef(null);
+  const scrollSpeed = 1; // Adjust for faster/slower scrolling
+  const visibleCount = 6;
+  const totalMovies = Math.min(discoverMovies.length, 9);
 
-  /*
-    useEffect to set up an interval for automatically updating the current index.
-    This creates a carousel-like effect by cycling through the first 9 trending movies.
-  */
+  
+  // Effect to handle the scrolling of the trending movies list
   useEffect(() => {
-    // Exit early if the list is not available or there are fewer than 9 movies
-    if (!trendingListRef.current || discoverMovies.length < 9) {
+    if (!trendingListRef.current || totalMovies <= visibleCount) {
       return;
     }
 
-    // Set up an interval to update the current index every 3 seconds
-    const intervalId = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % 9); // Loop back to the start after the 9th movie
-    }, 3000); // Adjust the interval (in milliseconds) as needed
+    const scrollContainer = trendingListRef.current;
+    //console.log('the first value of Scroll Container: ', scrollContainer);
+    // Get the width of one movie item with its right margin
+    //const firstMovie = scrollContainer.children[0];
+    //const movieWidth = firstMovie ? firstMovie.offsetWidth + parseFloat(getComputedStyle(firstMovie).marginRight || '0') : 0;
+    const movieWidth = 175; // Assuming a fixed width for the movie item
+    //console.log('Movie Width:', movieWidth);
+    const scrollToFullWidth = (totalMovies - visibleCount) * movieWidth; // Scroll to the point where the 7th movie starts going out of view
 
-    // Cleanup the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, [discoverMovies]);
+    const scroll = () => {
+      if (scrollContainer) {
+        scrollContainer.scrollLeft += scrollSpeed;
 
-  /*
-    useEffect to scroll the currently active movie into view whenever the currentIndex changes.
-    This ensures smooth scrolling behavior for the carousel effect.
-  */
-  useEffect(() => {
-    // Ensure the list container and movies are available
-    if (trendingListRef.current && discoverMovies.length >= 9) {
-      const listItems = trendingListRef.current.children;
+        // Calculate the scroll position to trigger the return
 
-      // Scroll the current movie into view smoothly
-      if (listItems && listItems.length > 0 && currentIndex < listItems.length) {
-        listItems[currentIndex].scrollIntoView({
-          behavior: 'smooth', // Smooth scrolling animation
-          block: 'nearest',
-          inline: 'start',
-        });
-      } else if (listItems && listItems.length > 0 && currentIndex === 0) {
-        // If the currentIndex resets to 0, scroll back to the start instantly
-        trendingListRef.current.scrollLeft = 0;
+        //console.log('Scroll to Full Width:', scrollToFullWidth);
+        //console.log('Scroll Position:', scrollContainer.scrollLeft);
+
+        if (scrollContainer.scrollLeft > scrollToFullWidth + 10) {
+          //console.log('Before Reset:', scrollContainer.scrollLeft);
+          scrollContainer.classList.remove('scroll-smooth'); // Remove the scroll-smooth class
+          scrollContainer.scrollLeft = 0; // Reset scroll position to the beginning
+          //console.log('After Reset:', scrollContainer.scrollLeft);
+          setTimeout(() => {
+            scrollContainer.classList.add('scroll-smooth');
+          }, 50); // Small delay to avoid immediate re-trigger
+          //console.log('Scrolling back to the beginning');
+        }
       }
-    }
-  }, [currentIndex, discoverMovies]);
+    };
+
+    scrollIntervalRef.current = setInterval(scroll, 50);
+
+    return () => clearInterval(scrollIntervalRef.current);
+  }, [discoverMovies, totalMovies, visibleCount, scrollSpeed]);
+
 
   return (
     /* Section for displaying trending movies */
@@ -55,10 +58,10 @@ const TrendingMovies = ({ discoverMovies }) => {
       <h2 className='mb-10'>Trending</h2>
       <ul
         ref={trendingListRef} // Attach the ref to the list container
-        className='flex overflow-x-auto scroll-smooth list-none p-0 m-0'
+        className='flex overflow-x-auto scroll-smooth list-none p-0 m-0 transform duration-300 ease-in-out'
       >
         {/* Loop through and render the first 9 trending movies */}
-        {discoverMovies.slice(0, 9).map((movie, i) => (
+        {discoverMovies && discoverMovies.slice(0, 9).map((movie, i) => (
           <li
             className='relative'
             key={movie.id} // Use movie ID as the unique key
