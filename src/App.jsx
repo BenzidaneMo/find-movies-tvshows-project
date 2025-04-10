@@ -132,10 +132,16 @@ function App() {
 
   // Trigger a toast notification if discoverMovies is empty or undefined
   useEffect(() => {
-    if (!discoverMovies || discoverMovies.length === 0) {
-      toast.error('Error fetching trending movies. Please check your internet connection.');
-    }
-  }, [discoverMovies]);
+    // Delay the toast for 5 seconds
+    const timeout = setTimeout(() => {
+      if (!discoverMovies || discoverMovies.length === 0) {
+        toast.error('Error fetching trending movies. Please check your internet connection.');
+      }
+    }, 1000); // 1000ms = 1 seconds
+
+    // Cleanup the timeout to avoid memory leaks
+    return () => clearTimeout(timeout);
+}, [discoverMovies]);
 
   return (
     <main>
