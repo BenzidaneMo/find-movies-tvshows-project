@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from 'react-toastify';
 import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
@@ -21,7 +23,7 @@ const APi_OPTIONS = {
 
 function App() {
   // State to store the search query entered by the user
-  const [searching, setSearching] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
   // State to store movies fetched from the discovery endpoint
   const [discoverMovies, setDiscoverMovies] = useState([])
   // State to store movies fetched from the search endpoint based on the search query
@@ -51,6 +53,8 @@ function App() {
         console.log(discoverMovies)
       } catch (error) {
         console.error('Error fetching discover movies:', error)
+        // Display an error toast if fetching fails
+        toast.error('Error fetching discover movies. Please try again later.')
       }
     }
     fetchDiscoverMovies()
@@ -64,30 +68,36 @@ function App() {
     const fetchSearchedMovies = async () => {
       try {
         // Fetch movies matching the search query using the search endpoint
-        const search = await fetch(`${API_URL}/search/movie?query=${searching}&include_adult=false&language=ar-US&page=1`, APi_OPTIONS)
+        const search = await fetch(`${API_URL}/search/movie?query=${searchTerm}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
         const searchData = await search.json()
 
         // Update state with the fetched search results
         setSearchedMovies(searchData.results)
+
+        console.log('Searched Movies:', searchedMovies)
       } catch (error) {
         console.error('Error fetching searched movies:', error)
+        // Display an error toast if fetching fails
+        toast.error('Error fetching searched movies. Please check your internet connection.')
       }
     }
 
     // Only fetch movies if the search query is not empty and the search icon is clicked
-    if (searching && isSearchClicked) {
+    if (searchTerm && isSearchClicked) {
       fetchSearchedMovies()
     }
-  }, [searching, isSearchClicked])
+  }, [searchTerm, isSearchClicked])
 
   // Event handler for search input changes, updates the `searching` state
   const handleSearching = (e) => {
-    setSearching(e.target.value)
     // trigger search on every input change
-    setIsSearchClicked(true)
+    setSearchTerm(e.target.value) 
   }
 
   const handleSearchIconClick = () => {
+    if(!searchTerm) {
+      return
+    }
     setIsSearchClicked(true)
   }
 
@@ -103,9 +113,9 @@ function App() {
         searchResultsRef.current &&
         !searchResultsRef.current.contains(event.target)
       ) {
-  // Reset search state when clicking outside
+        // Reset search state when clicking outside
         setIsSearchClicked(false)
-        setSearching('')
+        setSearchTerm('')
       }
     }
 
@@ -120,20 +130,28 @@ function App() {
     }
   }, [isSearchClicked]) // Re-run effect if `isSearchClicked` changes
 
+  // Trigger a toast notification if discoverMovies is empty or undefined
+  useEffect(() => {
+    if (!discoverMovies || discoverMovies.length === 0) {
+      toast.error('Error fetching trending movies. Please check your internet connection.');
+    }
+  }, [discoverMovies]);
+
   return (
     <main>
       <div className='pattern' />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="transparent" />
       <div className='wrapper'>
         <Header
           handleSearching={handleSearching}
-          searching={searching}
+          searchTerm={searchTerm}
           handleSearchIconClick={handleSearchIconClick}
           searchRef={searchRef}
         />
         <body>
           <SearchResults
             searchedMovies={searchedMovies}
-            searching={searching}
+            searchTerm={searchTerm}
             isSearchClicked={isSearchClicked}
             searchResultsRef={searchResultsRef}
           />
