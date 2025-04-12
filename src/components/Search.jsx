@@ -13,7 +13,7 @@ const Search = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef 
         <img
           src="search.svg"
           alt="search icon"
-          className='relative cursor-pointer'
+          className='relative cursor-pointer transition-transform duration-200 ease-in-out transform hover:scale-110 active:scale-90'
           onClick={handleSearchIconClick} // Call the function when the image is clicked
         />
         <input
