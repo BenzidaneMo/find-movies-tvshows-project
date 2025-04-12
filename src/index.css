@@ -44,7 +44,7 @@
   }
 
   header img {
-    @apply w-full max-w-lg h-auto object-contain mx-auto drop-shadow-md;
+    @apply w-full max-w-lg h-auto object-contain drop-shadow-md;
   }
 }
 
@@ -68,12 +68,12 @@
       @apply min-w-[175px] flex flex-row items-center;
     }
 
-    & ul li p {
-      @apply fancy-text mt-[22px] text-nowrap font-bold cursor-default;
+    & .rank-movies {
+      @apply fancy-text -mt-[25px] font-bold cursor-default;
     }
 
     & ul li img {
-      @apply max-w-[127px] h-[163px] rounded-lg object-cover -ml-3.5 cursor-pointer;
+      @apply max-w-[127px] h-[163px] rounded-md object-cover -ml-3.5 cursor-pointer;
     }
   }
 
