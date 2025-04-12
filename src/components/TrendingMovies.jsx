@@ -20,12 +20,9 @@ const TrendingMovies = ({ discoverMovies }) => {
         delay: 2500,
         disableOnInteraction: false,
       }}
-      pagination={{
-        clickable: false,
-      }}
       navigation={true}
-      modules={[Autoplay, Pagination, Navigation]}
-      className="mySwiper"
+      modules={[Autoplay, Navigation]}
+      className="mySwiper h-[163px]"
       breakpoints={{
         // when window width is >= 768px (md breakpoint in Tailwind)
         768: {
@@ -33,11 +30,11 @@ const TrendingMovies = ({ discoverMovies }) => {
         },
         // when window width is < 768px
         640: {
-          slidesPerView: 4,
+          slidesPerView: 5,
         },
         // when window width is < 640px
         0: {
-          slidesPerView: 3,
+          slidesPerView: 4,
         },
       }}
       >
