@@ -113,9 +113,8 @@ function App() {
         searchResultsRef.current &&
         !searchResultsRef.current.contains(event.target)
       ) {
-        // Reset search state when clicking outside
+        // Reset searched result state when clicking outside
         setIsSearchClicked(false)
-        setSearchTerm('')
       }
     }
 
