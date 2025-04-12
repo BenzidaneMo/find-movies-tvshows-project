@@ -46,11 +46,12 @@ function App() {
         const response = await fetch(`${API_URL}/discover/movie?sort_by=popularity.desc&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
         const data = await response.json()
 
+        //console.log("the data : ",data)
         // Update state with the fetched trending movies
         setDiscoverMovies(data.results)
 
         // Log the fetched movies for debugging purposes
-        console.log(discoverMovies)
+        //console.log(discoverMovies)
       } catch (error) {
         console.error('Error fetching discover movies:', error)
         // Display an error toast if fetching fails
@@ -88,12 +89,15 @@ function App() {
     }
   }, [searchTerm, isSearchClicked])
 
+  
   // Event handler for search input changes, updates the `searching` state
   const handleSearching = (e) => {
     // trigger search on every input change
     setSearchTerm(e.target.value) 
   }
 
+  // Event handler for search icon click, sets the `isSearchClicked` state to true
+  // This triggers the search effect to fetch movies based on the search query
   const handleSearchIconClick = () => {
     if(!searchTerm) {
       return
