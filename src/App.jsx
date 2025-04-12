@@ -43,7 +43,7 @@ function App() {
     const fetchDiscoverMovies = async () => {
       try {
         // Fetch trending movies using the discover endpoint
-        const response = await fetch(`${API_URL}/discover/movie?&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
+        const response = await fetch(`${API_URL}/discover/movie?sort_by=popularity.desc&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
         const data = await response.json()
 
         // Update state with the fetched trending movies
