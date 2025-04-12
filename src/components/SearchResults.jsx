@@ -13,7 +13,7 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
               {searchTerm ? 'Search for : ' : ''} {searchTerm}
             </h2>
             {/* Grid layout for search result movies */}
-            <ul className='grid grid-cols-6 gap-4'>
+            <ul className='grid min-lg:grid-cols-6 min-md:grid-cols-4 grid-cols-3 min-lg:gap-4 min-md:gap-3 gap-2'>
                 {/* Loop through and render up to the first 12 search result movies */}
                 {searchedMovies.slice(0, 12).map((movie) => (
                 <li className='relative shadow-md cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105' key={movie.id}>
