@@ -7,7 +7,7 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
     
     return (
         /* Section for showing the search results */
-        <div className='searched Movie' ref={searchResultsRef}>
+        <section className='searched Movie' ref={searchResultsRef}>
         {/* Title showing the current search query if present */}
             <h2 className='mb-5'>
               {searchTerm ? 'Search for : ' : ''} {searchTerm}
@@ -20,7 +20,10 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
                 {searchTerm ? (
                     <div className='rounded-md'>
                     {/* Movie poster image with rounded corners */}
-                        <img className='rounded-md' src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>
+                        {movie.poster_path ? (
+                        <img className='rounded-md' src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>) 
+                        : <img className="rounded-md" src="./no-movie.png" alt={movie.title} /> }
+
                         {/* Overlay div that shows more details on hover */}
                         <div className='absolute overflow-hidden text-clip top-0 w-full h-full bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white p-3'>
                             {/* Movie title displayed at the center */}
@@ -38,7 +41,7 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
                 </li>
                 ))}
             </ul>
-        </div>
+        </section>
     )
 }
 
