@@ -5,6 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
+import PopularMovies from './components/PopularMovies'
 
 // Base URL for TMDB API
 const API_URL = 'https://api.themoviedb.org/3'
@@ -148,6 +149,7 @@ function App() {
 
   return (
     <main>
+      <title>Find Movies{searchTerm ? ` | Searching For : ${searchTerm}`: ''}</title>
       <div className='pattern' />
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="transparent" />
       <div className='wrapper'>
@@ -165,6 +167,7 @@ function App() {
             searchResultsRef={searchResultsRef}
           />
           <TrendingMovies discoverMovies={discoverMovies} />
+          <PopularMovies discoverMovies={discoverMovies} />
         </body>
       </div>
     </main>
