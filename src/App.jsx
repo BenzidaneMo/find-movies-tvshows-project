@@ -178,7 +178,7 @@ function App() {
 
   return (
     <main>
-      <title>Find Movies{searchTerm ? ` | Searching For : ${searchTerm}`: ''}</title>
+      <title>Find Movies{searchTerm && isSearchClicked ? ` | Searching For : ${searchTerm}`: ''}</title>
       <div className='pattern' />
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="transparent" />
       <div className='wrapper'>
