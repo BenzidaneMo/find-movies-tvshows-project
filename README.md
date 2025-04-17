@@ -48,15 +48,15 @@ Find Movies is a React-based web application that allows users to discover trend
 
 ## Components 🧩
 
-1. Header
+1. **Header**
 - Displays the app logo and a search bar for finding movies.
-2. SearchResults
+2. **SearchResults**
 - Shows the search results in a grid layout.
 - Displays up to 12 movies based on the search query.
-3. TrendingMovies
+3. **TrendingMovies**
 - Displays the top 9 trending movies in a responsive Swiper carousel.
 - Includes hover effects to show additional movie details.
-4. PopularMovies
+4. **PopularMovies**
 - Displays popular movies with pagination.
 - Allows users to navigate between pages to view more movies.
 
@@ -66,12 +66,12 @@ Find Movies is a React-based web application that allows users to discover trend
 
 The app uses the **TMDB API** to fetch movie data. Below are the endpoints used:
 
-1. Discover Movies:
+1. **Discover Movies:**
 
 - Endpoint: /discover/movie
 - Parameters: sort_by=popularity.desc, include_adult=false, language=en-US, page
 
-2. Search Movies:
+2. **Search Movies:**
 
 - Endpoint: /search/movie
 - Parameters: query, include_adult=false, language=en-US, page=1
@@ -80,22 +80,22 @@ The app uses the **TMDB API** to fetch movie data. Below are the endpoints used:
 
 ## How It Works ⚙️
 
-1. Trending Movies:
+1. **Trending Movies:**
 
 - Fetched from the /discover/movie endpoint.
 - Displays the first 9 movies from the first page.
 
-2. Search Functionality:
+2. **Search Functionality:**
 
 - Fetches movies from the /search/movie endpoint based on the user's query.
 - Results are displayed in a grid layout with hover effects.
 
-3. Popular Movies with Pagination:
+3. **Popular Movies with Pagination:**
 
 - Fetches movies from the /discover/movie endpoint.
 - Allows users to navigate between pages using "Next" and "Previous" buttons.
 
-4. Error Handling:
+4. **Error Handling:**
 
 - Displays toast notifications for errors like failed API requests or empty search results.
 
