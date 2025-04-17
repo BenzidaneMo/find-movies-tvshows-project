@@ -62,7 +62,10 @@ function App() {
         // Log the fetched movies for debugging purposes
         //console.log(discoverMovies)
         if (page === 1) {
-          setTrendingMovies(data.results.slice(0, 9)); // Store the first 9 movies for TrendingMovies
+          const trendingResponse = await fetch(`${API_URL}/trending/all/week?language=en-US`, APi_OPTIONS)
+          const trendingData = await trendingResponse.json()
+          console.log('Trending Movies:', trendingData.results)
+          setTrendingMovies(trendingData.results.slice(0, 9)); // Store the first 9 trending movies and Tv Shows for TrendingMovies
         }
       } catch (error) {
         console.error('Error fetching discover movies:', error)
@@ -81,7 +84,7 @@ function App() {
     const fetchSearchedMovies = async () => {
       try {
         // Fetch movies matching the search query using the search endpoint
-        const search = await fetch(`${API_URL}/search/movie?query=${searchTerm}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
+        const search = await fetch(`${API_URL}/search/multi?query=${encodeURIComponent(searchTerm)}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
         const searchData = await search.json()
 
         // Update state with the fetched search results

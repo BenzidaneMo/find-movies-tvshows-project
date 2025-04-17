@@ -67,7 +67,7 @@ const TrendingMovies = ({ trendingMovies }) => {
             {/* Movie poster image */}
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} // Fetch poster image from TMDB
-              alt={movie.title} // Use movie title as alt text
+              alt={movie.title ? movie.title : movie.name} // Use movie title as alt text
               className='w-[108.66px] h-[163px] z-10 rounded-md object-cover -ml-3.5'
             />
             {/* Overlay div that appears on hover, showing the movie title */}
@@ -75,7 +75,7 @@ const TrendingMovies = ({ trendingMovies }) => {
             <div
               className='absolute z-20 overflow-hidden top-0 text-clip w-[108.66px] h-[163px] -ml-3.5 cursor-pointer bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white'
             >
-              <h3 className='text-center my-12 text-sm'>{movie.title}</h3>
+              <h3 className='text-center my-12 text-sm'>{movie.title ? movie.title : movie.name}</h3>
             </div>
           </div>
         </SwiperSlide>

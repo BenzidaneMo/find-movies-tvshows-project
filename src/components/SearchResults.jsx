@@ -21,16 +21,16 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
                     <div className='rounded-md'>
                     {/* Movie poster image with rounded corners */}
                         {movie.poster_path ? (
-                        <img className='rounded-md' src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>) 
-                        : <img className="rounded-md" src="no-movie.png" alt={movie.title} /> }
+                        <img className='rounded-md' src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title ? movie.title : movie.name}/>) 
+                        : <img className="rounded-md" src="no-movie.png" alt={movie.title ? movie.title : movie.name} /> }
 
                         {/* Overlay div that shows more details on hover */}
                         <div className='absolute overflow-hidden text-clip top-0 w-full h-full bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white p-3'>
                             {/* Movie title displayed at the center */}
-                            <h3 className='text-center font-bold text-lg my-4'>{movie.title}</h3>
+                            <h3 className='text-center font-bold text-lg my-4'>{movie.title ? movie.title : movie.name}</h3>
                             {/* Movie overview text */}
                             <p className='text-sm overflow-hidden text-clip'>
-                            Overview: {movie.overview.length > 100 ? movie.overview.slice(0, 100) + '...' : movie.overview}
+                            Overview: {movie.overview && movie.overview.length > 100 ? movie.overview.slice(0, 100) + '...' : movie.overview}
                             </p>
                             <br />
                             {/* Movie rating */}
