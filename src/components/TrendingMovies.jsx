@@ -8,7 +8,7 @@ import 'swiper/css/autoplay';
 
 
 const TrendingMovies = ({ trendingMovies }) => {
-  const trayArray = ['1','2','3','4','5','6','7','8','9']
+  const trayArray = ['1','2','3','4','5','6','7','8','9'] // Array to display placeholders when no trending movies are available
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 480); // State to track if the screen is large enough for navigation buttons to apear
 
   // Effect to handle window resize events
