@@ -22,7 +22,7 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
                     {/* Movie poster image with rounded corners */}
                         {movie.poster_path ? (
                         <img className='rounded-md' src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>) 
-                        : <img className="rounded-md" src="./no-movie.png" alt={movie.title} /> }
+                        : <img className="rounded-md" src="no-movie.png" alt={movie.title} /> }
 
                         {/* Overlay div that shows more details on hover */}
                         <div className='absolute overflow-hidden text-clip top-0 w-full h-full bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white p-3'>

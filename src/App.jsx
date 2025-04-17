@@ -40,7 +40,8 @@ function App() {
   const [page, setPage] = useState(1); // Current page
   // State to store the total number of pages available
   const [totalPages, setTotalPages] = useState(1); // Total pages available
-  const LimitPages = Math.min(30, totalPages); // Limit to 10 pages for the UI
+  // Limit to 30 pages or less for the UI
+  const LimitPages = Math.min(30, totalPages); 
 
 
   /*
@@ -123,6 +124,7 @@ function App() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
+        // Check if the click is outside the search bar and search results
         searchRef.current &&
         !searchRef.current.contains(event.target) &&
         searchResultsRef.current &&

@@ -8,11 +8,11 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                 <div className="grid bg-[#0F0D23] rounded-md transition-transform duration-300 ease-in-out transform hover:scale-103 active:scale-95" key={movie.id}>
                     {movie.backdrop_path ? 
                     (<img src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`} alt={movie.title} className="p-4 rounded-[20px] cursor-pointer"/>)
-                    : (<img src="./no-Poster.png" alt={`no poster for ${movie.title}`} className="p-4 rounded-[20px] cursor-pointer" />)}
+                    : (<img src="no-Poster.png" alt={`no poster for ${movie.title}`} className="p-4 rounded-[20px] cursor-pointer" />)}
                     <div className="p-4 pt-0 cursor-pointer">
                         <h3 className="font-bold mb-2">{movie.title}</h3>
                         <div className="flex gap-1">
-                            <img src="./star.svg" alt={`rating of ${movie.title}`} />
+                            <img src="star.svg" alt={`rating of ${movie.title}`} />
                             <p className="font-bold">{Math.round(movie.vote_average * 10) / 10}</p>
                             <p className="text-gray-100"><span className="text-xs"> ● </span>Action<span className="text-xs"> ● </span>Movie</p>
                         </div>
@@ -29,7 +29,7 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                   onClick={handlePreviousPage}
                   disabled={page === 1}
                 >
-                  <img src="./arrow-icon.svg" className="rotate-180" />
+                  <img src="arrow-icon.svg" className="rotate-180" />
                 </button>
               
                 {/* Page Indicator */}
@@ -45,7 +45,7 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                   onClick={handleNextPage}
                   disabled={page === LimitPages}
                 >
-                  <img src="./arrow-icon.svg" />
+                  <img src="arrow-icon.svg" />
                 </button>
         </div>
 

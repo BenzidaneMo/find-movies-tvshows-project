@@ -83,7 +83,7 @@ const TrendingMovies = ({ trendingMovies }) => {
         <SwiperSlide key={i}>
           <div className='flex rounded-md'>
             <div className='cursor-pointer ml-2 z-10 flex items-center justify-center min-w-[108.66px] h-[163px] bg-gray-300 rounded-md dark:bg-gray-700'>
-              <img src="./img.svg" className='w-10 h-10 opacity-30 transition-transform duration-300 ease-in-out transform hover:opacity-35'/>
+              <img src="img.svg" className='w-10 h-10 opacity-30 transition-transform duration-300 ease-in-out transform hover:opacity-35'/>
             </div>
             <p className='rank-movies relative right-11/12 z-0 hidden lg:block'>{i + 1}</p>
           </div>
