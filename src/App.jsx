@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import './App.css'
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import Header from './components/Header'
@@ -27,6 +26,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('')
   // State to store movies fetched from the discovery endpoint
   const [discoverMovies, setDiscoverMovies] = useState([])
+  // State to store trending movies fetched from the discovery endpoint
+  const [trendingMovies, setTrendingMovies] = useState([]); // Separate state for TrendingMovies
   // State to store movies fetched from the search endpoint based on the search query
   const [searchedMovies, setSearchedMovies] = useState([])
   // State to trigger the search when the icon is clicked or Enter is pressed
@@ -35,32 +36,41 @@ function App() {
   const searchRef = useRef(null)
   // Ref to the search results container
   const searchResultsRef = useRef(null)
+  // State to manage the current page of movies
+  const [page, setPage] = useState(1); // Current page
+  // State to store the total number of pages available
+  const [totalPages, setTotalPages] = useState(1); // Total pages available
+  const LimitPages = Math.min(30, totalPages); // Limit to 10 pages for the UI
+
 
   /*
     useEffect hook to fetch trending movies when the component mounts.
     It calls the discover endpoint to fetch a list of trending movies.
   */
   useEffect(() => {
-    const fetchDiscoverMovies = async () => {
+    const fetchDiscoverMovies = async (page = 1) => {
       try {
         // Fetch trending movies using the discover endpoint
-        const response = await fetch(`${API_URL}/discover/movie?sort_by=popularity.desc&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
+        const response = await fetch(`${API_URL}/discover/movie?sort_by=popularity.desc&include_adult=false&language=en-US&page=${page}}`, APi_OPTIONS)
         const data = await response.json()
 
         //console.log("the data : ",data)
         // Update state with the fetched trending movies
         setDiscoverMovies(data.results)
-
+        setTotalPages(data.total_pages) // Update total pages state
         // Log the fetched movies for debugging purposes
         //console.log(discoverMovies)
+        if (page === 1) {
+          setTrendingMovies(data.results.slice(0, 9)); // Store the first 9 movies for TrendingMovies
+        }
       } catch (error) {
         console.error('Error fetching discover movies:', error)
         // Display an error toast if fetching fails
         toast.error('Error fetching discover movies. Please try again later.')
       }
     }
-    fetchDiscoverMovies()
-  }, [])
+    fetchDiscoverMovies(page)
+  }, [page])
 
   /*
     useEffect hook to fetch movies based on the user's search query.
@@ -147,6 +157,20 @@ function App() {
     return () => clearTimeout(timeout);
 }, [discoverMovies]);
 
+  // Handle next page
+  const handleNextPage = () => {
+    if (page < LimitPages) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  // Handle previous page
+  const handlePreviousPage = () => {
+    if (page > 1) {
+      setPage((prevPage) => prevPage - 1);
+    }
+  };
+
   return (
     <main>
       <title>Find Movies{searchTerm ? ` | Searching For : ${searchTerm}`: ''}</title>
@@ -159,16 +183,22 @@ function App() {
           handleSearchIconClick={handleSearchIconClick}
           searchRef={searchRef}
         />
-        <body>
+        <div>
           <SearchResults
             searchedMovies={searchedMovies}
             searchTerm={searchTerm}
             isSearchClicked={isSearchClicked}
             searchResultsRef={searchResultsRef}
           />
-          <TrendingMovies discoverMovies={discoverMovies} />
-          <PopularMovies discoverMovies={discoverMovies} />
-        </body>
+          <TrendingMovies trendingMovies={trendingMovies} />
+          <PopularMovies 
+          discoverMovies={discoverMovies} 
+          page={page} 
+          LimitPages={LimitPages} 
+          handleNextPage={handleNextPage}
+          handlePreviousPage={handlePreviousPage}
+          />
+        </div>
       </div>
     </main>
   )
