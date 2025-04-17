@@ -101,6 +101,11 @@ The app uses the **TMDB API** to fetch movie data. Below are the endpoints used:
 
 ---
 
+## Screenshot
+
+[Screenshot](./public/localhost_ScreenShot.png)
+
+---
 ## Folder Structure 📂
 ```
 react-project/
