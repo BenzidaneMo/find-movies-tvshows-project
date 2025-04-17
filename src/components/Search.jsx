@@ -18,6 +18,7 @@ const Search = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef 
         />
         <input
           type="text"
+          name="search-for-movie"
           onChange={handleSearching}
           value={searchTerm}
           placeholder='Search through 300+ movies online'
