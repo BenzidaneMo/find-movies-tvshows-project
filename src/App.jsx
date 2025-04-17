@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
+import { useDebounce } from 'react-use'
 import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
@@ -41,7 +42,11 @@ function App() {
   // State to store the total number of pages available
   const [totalPages, setTotalPages] = useState(1); // Total pages available
   // Limit to 30 pages or less for the UI
-  const LimitPages = Math.min(30, totalPages); 
+  const LimitPages = Math.min(30, totalPages);
+  // State to store the search term after debouncing
+  const [debouncedSearchTerm , setDebouncedSearchTerm] = useState('');
+  // Debounce the search term to avoid excessive API calls
+  useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm])
 
 
   /*
@@ -84,7 +89,7 @@ function App() {
     const fetchSearchedMovies = async () => {
       try {
         // Fetch movies matching the search query using the search endpoint
-        const search = await fetch(`${API_URL}/search/multi?query=${encodeURIComponent(searchTerm)}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
+        const search = await fetch(`${API_URL}/search/multi?query=${encodeURIComponent(debouncedSearchTerm)}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
         const searchData = await search.json()
 
         // Update state with the fetched search results
@@ -99,16 +104,19 @@ function App() {
     }
 
     // Only fetch movies if the search query is not empty and the search icon is clicked
-    if (searchTerm && isSearchClicked) {
+    if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '' && isSearchClicked) {
       fetchSearchedMovies()
     }
-  }, [searchTerm, isSearchClicked])
+  }, [debouncedSearchTerm, isSearchClicked])
 
   
   // Event handler for search input changes, updates the `searching` state
   const handleSearching = (e) => {
     // trigger search on every input change
-    setSearchTerm(e.target.value) 
+    setSearchTerm(e.target.value)
+    if (e.target.value === '') {
+      setIsSearchClicked(false)
+    }
   }
 
   // Event handler for search icon click, sets the `isSearchClicked` state to true
@@ -151,7 +159,7 @@ function App() {
 
   // Trigger a toast notification if discoverMovies is empty or undefined
   useEffect(() => {
-    // Delay the toast for 5 seconds
+    // Delay the toast for 1 seconds
     const timeout = setTimeout(() => {
       if (!discoverMovies || discoverMovies.length === 0) {
         toast.error('Error fetching trending movies. Please check your internet connection.');
@@ -160,7 +168,7 @@ function App() {
 
     // Cleanup the timeout to avoid memory leaks
     return () => clearTimeout(timeout);
-}, [discoverMovies]);
+  }, [discoverMovies]);
 
   // Handle next page
   const handleNextPage = () => {
