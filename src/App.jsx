@@ -6,6 +6,7 @@ import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
+import { updateSearchCount } from './appwrite';
 
 // Base URL for TMDB API
 const API_URL = 'https://api.themoviedb.org/3'
@@ -95,6 +96,7 @@ function App() {
         // Update state with the fetched search results
         setSearchedMovies(searchData.results)
 
+        updateSearchCount()
         console.log('Searched Movies:', searchedMovies)
       } catch (error) {
         console.error('Error fetching searched movies:', error)
