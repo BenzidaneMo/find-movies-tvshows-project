@@ -96,7 +96,10 @@ function App() {
         // Update state with the fetched search results
         setSearchedMovies(searchData.results)
 
-        updateSearchCount()
+        if (searchData.results.length > 0) {
+          // Update the search count for the searched movie
+          await updateSearchCount(debouncedSearchTerm, searchData.results[0])
+        }
         console.log('Searched Movies:', searchedMovies)
       } catch (error) {
         console.error('Error fetching searched movies:', error)
