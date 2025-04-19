@@ -7,7 +7,7 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
     
     return (
         /* Section for showing the search results */
-        <section className='searched Movie' ref={searchResultsRef}>
+        <section ref={searchResultsRef}>
         {/* Title showing the current search query if present */}
             <h2 className='mb-5'>
               {searchTerm ? 'Search for : ' : ''} {searchTerm}
@@ -25,16 +25,16 @@ const SearchResults = ({ searchedMovies, searchTerm, isSearchClicked, searchResu
                         : <img className="rounded-md" src="no-movie.png" alt={movie.title ? movie.title : movie.name} /> }
 
                         {/* Overlay div that shows more details on hover */}
-                        <div className='absolute overflow-hidden text-clip top-0 w-full h-full bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white p-3'>
+                        <div className='absolute overflow-hidden text-clip top-0 w-full h-full bg-black opacity-0 rounded-md hover:opacity-70 active:opacity-70 transition-opacity duration-300 ease-in-out text-white p-3'>
                             {/* Movie title displayed at the center */}
-                            <h3 className='text-center font-bold text-lg my-4'>{movie.title ? movie.title : movie.name}</h3>
+                            <h3 className='text-center font-bold text-lg my-4 max-sm:text-sm'>{movie.title ? movie.title : movie.name}</h3>
                             {/* Movie overview text */}
-                            <p className='text-sm overflow-hidden text-clip'>
+                            <p className='text-sm overflow-hidden text-clip max-sm:hidden'>
                             Overview: {movie.overview && movie.overview.length > 100 ? movie.overview.slice(0, 100) + '...' : movie.overview}
                             </p>
                             <br />
                             {/* Movie rating */}
-                            <p className='text-sm float-end'>Rating: {Math.floor(movie.vote_average*10)}%</p>
+                            <p className='text-sm float-end max-sm:hidden'>Rating: {Math.floor(movie.vote_average*10)}%</p>
                         </div>
                     </div>
                 ) : (null)}

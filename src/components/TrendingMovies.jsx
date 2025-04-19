@@ -73,7 +73,7 @@ const TrendingMovies = ({ trendingMovies }) => {
             {/* Overlay div that appears on hover, showing the movie title */}
             <p className='rank-movies relative right-11/12 z-0 hidden lg:block'>{i + 1}</p>
             <div
-              className='absolute z-20 overflow-hidden top-0 text-clip w-[108.66px] h-[163px] -ml-3.5 cursor-pointer bg-black opacity-0 rounded-md hover:opacity-70 transition-opacity duration-300 ease-in-out text-white'
+              className='absolute z-20 overflow-hidden top-0 text-clip w-[108.66px] h-[163px] -ml-3.5 cursor-pointer bg-black opacity-0 rounded-md hover:opacity-70 active:opacity-70 transition-opacity duration-300 ease-in-out text-white'
             >
               <h3 className='text-center my-12 text-sm'>{movie.title ? movie.title : movie.name}</h3>
             </div>
