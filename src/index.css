@@ -89,7 +89,7 @@
     }
 
     & input {
-      @apply w-full bg-transparent py-2 sm:pr-10 pl-10 text-base text-gray-200 placeholder-light-200 outline-hidden;
+      @apply w-full bg-transparent py-2 sm:pr-10 pl-12 text-base text-gray-200 placeholder-light-200 outline-hidden;
     }
   }
 

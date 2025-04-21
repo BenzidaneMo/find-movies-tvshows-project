@@ -3,7 +3,7 @@ import Search from './Search'
 const Header = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef }) => {
   
     return (
-        <header className='mb-30 mt-0'>
+        <header className='mt-0'>
           <div className='w-full flex flex-col items-center'>
             {/* Logo acts as a link to the home page */}
             <a href="/" className='mb-10'>
