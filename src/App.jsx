@@ -6,7 +6,7 @@ import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
-import { updateSearchCount, getSearchCount } from './appwrite';
+import { updateSearchCount, getTrendingMoviesBySearchCount } from './appwrite';
 
 // Base URL for TMDB API
 const API_URL = 'https://api.themoviedb.org/3'
@@ -89,7 +89,7 @@ function App() {
   useEffect(() => {
     const getTrendingMovies = async () => {
       try {
-        const searchCount = await getSearchCount();
+        const searchCount = await getTrendingMoviesBySearchCount();
 
         // Create a map to store movies by ID and keep track of the highest count
         const uniqueMoviesMap = new Map();

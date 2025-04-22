@@ -47,7 +47,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
     }
 }
 
-export const getSearchCount = async () => {
+export const getTrendingMoviesBySearchCount = async () => {
     // 1. USE Appwrite to get the searchTerm and count from the database
     // 2. Fetch all documents in a loop until there are no more documents to fetch
     // 3. Use pagination to fetch all documents in batches of 1000
