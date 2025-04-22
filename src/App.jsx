@@ -6,7 +6,7 @@ import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
-import { updateSearchCount } from './appwrite';
+import { updateSearchCount, getSearchCount } from './appwrite';
 
 // Base URL for TMDB API
 const API_URL = 'https://api.themoviedb.org/3'
@@ -51,7 +51,7 @@ function App() {
 
 
   /*
-    useEffect hook to fetch trending movies when the component mounts.
+    useEffect hook to fetch movies when the component mounts.
     It calls the discover endpoint to fetch a list of trending movies.
   */
   useEffect(() => {
@@ -67,12 +67,12 @@ function App() {
         setTotalPages(data.total_pages) // Update total pages state
         // Log the fetched movies for debugging purposes
         //console.log(discoverMovies)
-        if (page === 1) {
+        /*if (page === 1) {
           const trendingResponse = await fetch(`${API_URL}/trending/all/week?language=en-US`, APi_OPTIONS)
           const trendingData = await trendingResponse.json()
           console.log('Trending Movies:', trendingData.results)
           setTrendingMovies(trendingData.results.slice(0, 9)); // Store the first 9 trending movies and Tv Shows for TrendingMovies
-        }
+        }*/
       } catch (error) {
         console.error('Error fetching discover movies:', error)
         // Display an error toast if fetching fails
@@ -81,6 +81,44 @@ function App() {
     }
     fetchDiscoverMovies(page)
   }, [page])
+
+/*
+    useEffect hook to fetch trending movies when the component mounts.
+    It calls the getSearchCount function to fetch the search count data from the appwrite database.
+*/
+  useEffect(() => {
+    const getTrendingMovies = async () => {
+      try {
+        const searchCount = await getSearchCount();
+
+        // Create a map to store movies by ID and keep track of the highest count
+        const uniqueMoviesMap = new Map();
+        // Iterate through the searchCount array and populate the map
+        for (const movie of searchCount) {
+          // Check if the movie already exists in the map
+          const existingMovie = uniqueMoviesMap.get(movie.movie_id);
+          // If it does, compare the counts and keep the one with the higher count
+          if (!existingMovie || movie.count > existingMovie.count) {
+            // If it doesn't, add it to the map
+            uniqueMoviesMap.set(movie.movie_id, movie);
+          }
+        }
+
+        // Convert the map values back to an array
+        const uniqueMovies = Array.from(uniqueMoviesMap.values());
+
+        // Sort the unique movies by count in descending order
+        uniqueMovies.sort((a, b) => b.count - a.count);
+
+        setTrendingMovies(uniqueMovies.slice(0, 9)); // Store the first 9 trending movies and Tv Shows for TrendingMovies
+      }
+      catch (error) {
+        console.error("Error getting trending movies from appwrite :", error)
+      }
+    }
+    getTrendingMovies()
+  }, [])
+  console.log('Trending Movies:', trendingMovies)
 
   /*
     useEffect hook to fetch movies based on the user's search query.
@@ -97,16 +135,16 @@ function App() {
         setSearchedMovies(searchData.results)
 
         if (searchData.results.length > 0) {
-          // Update the search count for the searched movie
-          await updateSearchCount(debouncedSearchTerm, searchData.results[0])
+          // Update the search count for the searched movie in the database
+          await updateSearchCount(debouncedSearchTerm.trim(), searchData.results[0])
         }
-        console.log('Searched Movies:', searchedMovies)
       } catch (error) {
         console.error('Error fetching searched movies:', error)
         // Display an error toast if fetching fails
         toast.error('Error fetching searched movies. Please check your internet connection.')
       }
     }
+    console.log('Searched Movies:', searchedMovies)
 
     // Only fetch movies if the search query is not empty and the search icon is clicked
     if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '' && isSearchClicked) {

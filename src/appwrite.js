@@ -36,6 +36,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
                 searchTerm,
                 count: 1,
                 movie_id: movie.id,
+                movie_name: movie.title || movie.name,
                 poster_url: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : ''
             });
             console.log('poster url', movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'no-movie.png')
@@ -44,5 +45,38 @@ export const updateSearchCount = async (searchTerm, movie) => {
     catch (error) {
         console.error('Error updating search count:', error); // Log any errors for debugging
     }
-    
+}
+
+export const getSearchCount = async () => {
+    // 1. USE Appwrite to get the searchTerm and count from the database
+    // 2. Fetch all documents in a loop until there are no more documents to fetch
+    // 3. Use pagination to fetch all documents in batches of 1000
+    // 4. Store all documents in the allDocuments array
+    try {
+        let allDocuments = []; // Array to hold all documents
+        let cursor = null; // Cursor for pagination
+        const limit = 1000; // Limit for the number of documents to fetch in each request
+        while (true) {
+          const queries = [Query.limit(limit)];
+          // Add cursor for pagination if it exists
+          if (cursor) {
+            queries.push(Query.cursorAfter(cursor));
+          }
+          // Fetch documents from Appwrite
+          const response = await database.listDocuments(DATABASE_ID, COLLECTION_ID, queries);
+          // break if no more documents are returned
+          if (response.documents.length === 0) {
+            break; // No more documents
+          }
+          // Add the fetched documents to the allDocuments array
+          allDocuments = allDocuments.concat(response.documents);
+          cursor = response.documents[response.documents.length - 1].$id;
+        }
+        // Log the total number of documents fetched
+        console.log("Total number of documents:", allDocuments.length);
+        return allDocuments;
+    }
+    catch (error) {
+        console.error("Error getting the search count :",error)
+    }
 }
