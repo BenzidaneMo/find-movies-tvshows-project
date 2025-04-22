@@ -60,14 +60,14 @@ const TrendingMovies = ({ trendingMovies }) => {
       >
         {/* Loop through and render the first 9 trending movies */}
         {trendingMovies && trendingMovies.length > 0 ? trendingMovies.map((movie, i) => (
-        <SwiperSlide key={movie.id}>
+        <SwiperSlide key={movie.movie_id}>
           {/* Display the movie's rank/index */}
           {/* Container for movie poster with hover effect */}
           <div className='relative flex rounded-md cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105'>
             {/* Movie poster image */}
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} // Fetch poster image from TMDB
-              alt={movie.title ? movie.title : movie.name} // Use movie title as alt text
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_url}`} // Fetch poster image from TMDB
+              alt={movie.movie_name} // Use movie title as alt text
               className='w-[108.66px] h-[163px] z-10 rounded-md object-cover -ml-3.5'
             />
             {/* Overlay div that appears on hover, showing the movie title */}
@@ -75,7 +75,7 @@ const TrendingMovies = ({ trendingMovies }) => {
             <div
               className='absolute z-20 overflow-hidden top-0 text-clip w-[108.66px] h-[163px] -ml-3.5 cursor-pointer bg-black opacity-0 rounded-md hover:opacity-70 active:opacity-70 transition-opacity duration-300 ease-in-out text-white'
             >
-              <h3 className='text-center my-12 text-sm'>{movie.title ? movie.title : movie.name}</h3>
+              <h3 className='text-center my-12 text-sm'>{movie.movie_name}</h3>
             </div>
           </div>
         </SwiperSlide>
