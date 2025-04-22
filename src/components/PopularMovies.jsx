@@ -28,8 +28,9 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                   }`}
                   onClick={handlePreviousPage}
                   disabled={page === 1}
+                  name="previous-button"
                 >
-                  <img src="arrow-icon.svg" className="rotate-180" />
+                  <img src="arrow-icon.svg" className="rotate-180" alt="previous button" />
                 </button>
               
                 {/* Page Indicator */}
@@ -44,8 +45,9 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                   }`}
                   onClick={handleNextPage}
                   disabled={page === LimitPages}
+                  name="next-button"
                 >
-                  <img src="arrow-icon.svg" />
+                  <img src="arrow-icon.svg" alt="next button" />
                 </button>
         </div>
 
