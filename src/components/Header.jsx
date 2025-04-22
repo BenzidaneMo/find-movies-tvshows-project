@@ -10,8 +10,8 @@ const Header = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef 
               {/* Logo image */}
               <img src="logo.png" alt="logo" className='min-md:w-25 w-20 h-auto self-center cursor-pointer' />
             </a>
-          {/* Hero image displayed below the logo */}
-          <img src="hero.png" alt="img displaying movies" />
+            {/* Hero image displayed below the logo */}
+            <img src="hero.webp" alt="img displaying movies" />
           </div>
           {/* Main title with highlighted text */}
           <h1>
