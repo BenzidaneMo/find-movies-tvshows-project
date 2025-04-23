@@ -1,4 +1,5 @@
 import Search from './Search'
+import TypingText from './TypingText'
 
 const Header = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef }) => {
   
@@ -14,9 +15,7 @@ const Header = ({ handleSearching, searchTerm, handleSearchIconClick, searchRef 
             <img src="hero.webp" alt="img displaying movies" />
           </div>
           {/* Main title with highlighted text */}
-          <h1>
-            Find <span className='text-gradient'>Movies</span> You&apos;ll Enjoy Without the Hassle
-          </h1>
+          <TypingText />
           {/* Search component */}
           <Search
             handleSearching={handleSearching}
