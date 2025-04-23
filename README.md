@@ -1,6 +1,6 @@
 # Find Movies 🎥
 
-Find Movies is a React-based web application that allows users to discover trending movies, search for specific movies, and browse popular movies with pagination. The app fetches data from the TMDB (The Movie Database) API and provides an intuitive and responsive user interface.
+[Find Movies](https://find-movies-tvshows-project.vercel.app/) is a React-based web application that allows users to discover trending movies, search for specific movies, and browse popular movies with pagination. The app fetches data from the TMDB (The Movie Database) API and provides an intuitive and responsive user interface.
 
 ---
 
