@@ -89,28 +89,9 @@ function App() {
   useEffect(() => {
     const getTrendingMovies = async () => {
       try {
-        const searchCount = await getTrendingMoviesBySearchCount();
+        const searchCount = await getTrendingMoviesBySearchCount()
 
-        // Create a map to store movies by ID and keep track of the highest count
-        const uniqueMoviesMap = new Map();
-        // Iterate through the searchCount array and populate the map
-        for (const movie of searchCount) {
-          // Check if the movie already exists in the map
-          const existingMovie = uniqueMoviesMap.get(movie.movie_id);
-          // If it does, compare the counts and keep the one with the higher count
-          if (!existingMovie || movie.count > existingMovie.count) {
-            // If it doesn't, add it to the map
-            uniqueMoviesMap.set(movie.movie_id, movie);
-          }
-        }
-
-        // Convert the map values back to an array
-        const uniqueMovies = Array.from(uniqueMoviesMap.values());
-
-        // Sort the unique movies by count in descending order
-        uniqueMovies.sort((a, b) => b.count - a.count);
-
-        setTrendingMovies(uniqueMovies.slice(0, 9)); // Store the first 9 trending movies and Tv Shows for TrendingMovies
+        setTrendingMovies(searchCount); // Store the first 9 trending movies and Tv Shows for TrendingMovies
       }
       catch (error) {
         console.error("Error getting trending movies from appwrite :", error)
@@ -207,7 +188,7 @@ function App() {
       if (!discoverMovies || discoverMovies.length === 0) {
         toast.error('Error fetching trending movies. Please check your internet connection.');
       }
-    }, 1000); // 1000ms = 1 seconds
+    }, 2000); // 2 seconds
 
     // Cleanup the timeout to avoid memory leaks
     return () => clearTimeout(timeout);
