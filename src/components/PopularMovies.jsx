@@ -18,7 +18,7 @@ const PopularMovies = ({discoverMovies, page, LimitPages, handleNextPage, handle
                         </div>
                     </div>
                 </div>
-                )): (<>Loading...</>)}
+                )): (<div className="min-h-[500px]">Loading...</div>)}
             </div>
             <div className="flex justify-between items-center text-white w-full mt-4">
                 {/* Previous Button */}
