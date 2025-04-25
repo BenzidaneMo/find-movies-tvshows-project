@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 const TypingText = ({
     speed = 100,
     delay = 2000
-}) => {
+  }) => {
     const texts = useMemo(() => ["You'll Enjoy Without the Hassle", "No Stress, Just Streaming", "Endless Entertainment"], []); // Memoize texts to avoid re-creating the array on every render
     const [displayed, setDisplayed] = useState("");       // The currently displayed text string
     const [index, setIndex] = useState(0);                // The current character index within the *current* text
@@ -55,10 +55,12 @@ const TypingText = ({
     }, [index, isTyping, isWaiting, textIndex, texts, speed, delay]);
 
   return (
-    <h1 aria-live="polite">
-      Find <span className='text-gradient'>Movies</span> {displayed}
-      <span className={`animate-pulse ${isWaiting ? 'opacity-0' : 'opacity-100'}`}>|</span>
-    </h1>
+    <div className="min-h-38">
+      <h1 aria-live="polite">
+        Find <span className='text-gradient'>Movies</span> {displayed}
+        <span className={`animate-pulse ${isWaiting ? 'opacity-0' : 'opacity-100'}`}>|</span>
+      </h1>
+    </div>
   );
 };
 
