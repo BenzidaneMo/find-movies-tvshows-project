@@ -1,12 +1,12 @@
 # Find Movies 🎥
 
-[Find Movies](https://find-movies-tvshows-project.vercel.app/) is a React-based web application that allows users to discover trending movies, search for specific movies, and browse popular movies with pagination. The app fetches data from the TMDB (The Movie Database) API and provides an intuitive and responsive user interface.
+[Find Movies](https://find-movies-tvshows-project.vercel.app/) a React-based movie discovery application built with Vite, Tailwind CSS, and Swiper.js that connects to The Movie Database (TMDB) API to let users explore popular movies, search titles with debounced queries, and view live trending metrics powered by a local PostgreSQL database and Express.js REST API.
 
 ---
 
 ## Features ✨
 
-- **Trending Movies**: Displays the top 9 trending movies fetched from the Appwrite database.
+- **Trending Movies**: Displays the top 9 trending movies fetched from (the Appwrite database) now Local PostgreSQL database.
 - **Search Functionality**: Allows users to search for movies by title and view the results in a grid layout.
 - **Search Tracking**: Tracks user searches and stores the first search result in the Appwrite database with a counter.
 - **Popular Movies with Pagination**: Browse through popular movies with the ability to navigate between pages.
@@ -16,14 +16,35 @@
 
 ---
 
-## Technologies Used 🛠️
+## Tech Stack 🛠️
 
-- **React**: Frontend framework for building the user interface.
-- **Tailwind CSS**: Utility-first CSS framework for styling.
-- **Swiper.js**: For creating responsive carousels.
-- **React Toastify**: For displaying toast notifications.
-- **TMDB API**: For fetching movie data.
-- **Appwrite**: Backend-as-a-service for managing search tracking and trending movies.
+- **Frontend**: React, Vite, Tailwind CSS, Swiper.js, React-Toastify, React-Use (useDebounce)
+- **Backend**: Node.js, Express, PostgreSQL
+- **Database**: Local PostgreSQL
+- **External API**: TMDB API v4 (The Movie Database)
+
+---
+
+## 📋 Summary of Changes Done
+
+Here is a breakdown of the architectural refactoring done to transition the application from Appwrite Cloud BaaS to a fully local SQL setup:
+
+1. **Database Layer (Appwrite → PostgreSQL)**
+   * **Schema Design:** Created a dedicated `metrics` table in local PostgreSQL with strong types (`SERIAL`, `INT`, `VARCHAR`, `TIMESTAMP`).
+   * **Performance & Data Integrity:** Added a `UNIQUE` constraint on `movie_id` to allow atomic UPSERT operations and created an index on `count DESC` to make top-9 queries near-instantaneous.
+
+2. **Custom Backend API (`server/`)**
+   * **Express Server:** Created a lightweight Node.js/Express REST server acting as an intermediary between the browser and PostgreSQL (since browsers cannot directly access database socket ports).
+   * **Atomic UPSERT Query:** Replaced multi-step document checking with a single SQL query (`INSERT ... ON CONFLICT (movie_id) DO UPDATE SET count = metrics.count + 1`) to eliminate race conditions when tracking search counts.
+
+3. **Frontend Integration (`src/db.js` & `App.jsx`)**
+   * **SDK Removal:** Uninstalled `@appwrite/sdk` dependencies and removed project/collection environment variables.
+   * **Service Abstraction:** Created `src/db.js` using standard `fetch()` calls targeting `http://localhost:5000/api/movies`.
+   * **State Synchronization:** Updated `App.jsx` to immediately re-fetch and refresh `trendingMovies` after a successful search execution.
+
+4. **UI & API Authentication Fixes**
+   * **Image URL Resolution:** Fixed image rendering in `TrendingMovies.jsx` by passing full poster URLs directly instead of concatenating TMDB base paths twice.
+   * **TMDB Bearer Auth:** Switched from the v3 short API key to the TMDB v4 **API Read Access Token** in `APi_OPTIONS` headers, resolving `401 Unauthorized` empty array errors.
 
 ---
 
@@ -31,65 +52,51 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/find-movies.git
-   cd find-movies
+   git clone https://github.com/BenzidaneMo/find-movies-tvshows-project.git
+   cd find-movies-tvshows-project
    ```
-2. To install dependencies:
+2. Create a .env.local file in your root project directory:   
+```
+   VITE_TMDB_API_KEY=your_tmdb_v4_read_access_token_here
+```
+3. Start the Express Backend Server:
    ```bash
+   cd server
    npm install
-    ```
-3. Create a .env file in the root directory and add your TMDB API key and Appwrite credentials:   
-```
-   VITE_TMDB_API_KEY=your_tmdb_api_key
-   VITE_APPWRITE_PROJECT_ID=your_appwrite_project_id
-   VITE_APPWRITE_DATABASE_ID=your_appwrite_database_id
-   VITE_APPWRITE_COLLECTION_ID=your_appwrite_collection_id
-```
-4. Start the development server:
-    ```bash
-    npm run dev
+   node index.js
    ```
+4. Start the React Application:
+   ```bash
+   # In the project root folder
+   npm install
+   npm run dev
+    ```
 5. Open the app in your browser at http://localhost:5173.
 
 ---
 
-## Components 🧩
+## Local Database Setup 🛠️
 
-1. **Header**
-- Displays the app logo and a search bar for finding movies.
-2. **SearchResults**
-- Shows the search results in a grid layout.
-- Displays up to 12 movies based on the search query.
-3. **TrendingMovies**
-- Displays the top 9 trending movies based on user searches.
-- Fetches data from the Appwrite database and sorts movies by search count.
-- Displays the trending movies in a responsive Swiper carousel.
-4. **PopularMovies**
-- Displays popular movies with pagination.
-- Allows users to navigate between pages to view more movies.
+Execute the following SQL commands in your local PostgreSQL shell (psql) or database manager (Beekeeper Studio, DBeaver, or PgAdmin):
+```
+-- 1. Create the database
+CREATE DATABASE find_movies_db;
 
----
+-- 2. Create the metrics table
+CREATE TABLE metrics (
+    id SERIAL PRIMARY KEY,
+    movie_id INT UNIQUE NOT NULL,
+    movie_name VARCHAR(255) NOT NULL,
+    search_term VARCHAR(255) NOT NULL,
+    count INT DEFAULT 1,
+    poster_url TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-## New Feature: Search Tracking and Trending Movies 📊
-
-**How It Works:**
-
-1. **Search Tracking:**
-
-- When a user searches for a movie, the first result is stored in the Appwrite database along with a search count.
-- If the movie already exists in the database, its search count is incremented.
-
-2. **Trending Movies:**
-
-- The app fetches data from the Appwrite database to retrieve the most searched movies.
-- The top 9 movies with the highest search counts are displayed in the "Trending" section.
-
-**Appwrite Integration:**
-
-- **Database:** Stores search terms, movie details, and search counts.
-- **API Functions:**
-   - updateSearchCount: Updates the search count for a movie or creates a new entry if it doesn't exist.
-   - getSearchCount: Fetches all movies and their search counts from the database.
+-- 3. Create index for fast sorting on search counts
+CREATE INDEX idx_metrics_count ON metrics (count DESC);
+```
 
 ---
 
@@ -109,17 +116,6 @@ The app uses the **TMDB API** and **Appwrite** for data fetching and storage. Be
 - Endpoint: /search/movie
 - Parameters: query, include_adult=false, language=en-US, page=1
 
-**Appwrite Functions:**
-
-1. **updateSearchCount:**
-
-- Updates the search count for a movie in the Appwrite database.
-- Creates a new entry if the movie doesn't exist.
-
-2. **getSearchCount:**
-
-- Fetches all movies and their search counts from the Appwrite database.
-- Sorts movies by search count in descending order.
 
 ---
 
@@ -127,7 +123,7 @@ The app uses the **TMDB API** and **Appwrite** for data fetching and storage. Be
 
 1. **Trending Movies:**
 
-- Fetched from the Appwrite database based on user searches.
+- Fetched from (the Appwrite database) postgresql database based on user searches.
 - Displays the top 9 movies with the highest search counts.
 
 2. **Search Functionality:**
@@ -155,17 +151,21 @@ The app uses the **TMDB API** and **Appwrite** for data fetching and storage. Be
 ```
 react-project/
 ├── public/                 # Public assets
+├── server/
+│   ├── db.js          # PostgreSQL connection pool configuration
+│   ├── index.js       # Express server & raw SQL API routes
+│   └── package.json   # Backend node dependencies
 ├── src/
 │   ├── components/         # React components
 │   │   ├── Header.jsx
 │   │   ├── SearchResults.jsx
-│   │   ├── [TrendingMovies.jsx]
+│   │   ├── TrendingMovies.jsx
 │   │   ├── PopularMovies.jsx
-│   ├── [appwrite.js]                                    # Appwrite integration functions
 │   ├── [App.jsx]                                        # Main app component
+|   ├── db.js               # Service abstraction for local REST endpoints
 │   ├── index.css           # Global styles
 │   └── main.jsx            # Entry point
-├── .env                    # Environment variables
+├── .env.local              # Environment variables (TMDB Token)
 ├── [package.json]                                       # Project dependencies
 └── [README.md]                                          # Project documentation
 ```

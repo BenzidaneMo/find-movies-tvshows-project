@@ -6,7 +6,8 @@ import Header from './components/Header'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
-import { updateSearchCount, getTrendingMoviesBySearchCount } from './appwrite';
+// *** SWAPPED APPWRITE FOR LOCAL POSTGRES DB SERVICE ***
+import { updateSearchCount, getTrendingMoviesBySearchCount } from './db';
 
 // Base URL for TMDB API
 const API_URL = 'https://api.themoviedb.org/3'
@@ -117,7 +118,12 @@ function App() {
 
         if (searchData.results.length > 0) {
           // Update the search count for the searched movie in the database
+          // Updates PostgreSQL database via local Express endpoint
           await updateSearchCount(debouncedSearchTerm.trim(), searchData.results[0])
+
+          // Automatically refresh trending carousel with updated SQL counts
+          const updatedTrending = await getTrendingMoviesBySearchCount();
+          setTrendingMovies(updatedTrending);
         }
       } catch (error) {
         console.error('Error fetching searched movies:', error)

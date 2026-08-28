@@ -66,7 +66,7 @@ const TrendingMovies = ({ trendingMovies }) => {
           <div className='relative flex rounded-md cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105'>
             {/* Movie poster image */}
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_url}`} // Fetch poster image from TMDB
+              src={movie.poster_url} // Fetch poster image from TMDB
               alt={movie.movie_name} // Use movie title as alt text
               className='w-[108.66px] h-[163px] z-10 rounded-md object-cover -ml-3.5'
             />
