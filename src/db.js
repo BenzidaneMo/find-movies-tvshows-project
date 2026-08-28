@@ -4,8 +4,8 @@ const DB_MODE = import.meta.env.VITE_DB_MODE || 'local';
 const LOCAL_API_URL = 'http://localhost:5000/api/movies';
 
 // Initialize Supabase client
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 const supabase = (supabaseUrl && supabaseAnonKey) 
   ? createClient(supabaseUrl, supabaseAnonKey) 
   : null;
