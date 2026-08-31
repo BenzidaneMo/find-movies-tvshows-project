@@ -3,6 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { useDebounce } from 'react-use'
 import Header from './components/Header'
+import Footer from './components/Footer'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
@@ -243,6 +244,7 @@ function App() {
           />
         </div>
       </div>
+      <Footer />
     </main>
   )
 }

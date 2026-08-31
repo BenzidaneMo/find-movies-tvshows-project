@@ -61,6 +61,11 @@
     @apply px-5 py-12 xs:p-10 max-w-7xl mx-auto flex flex-col relative z-10;
   }
 
+  .footer {
+    @apply bg-dark-100 mt-4 xs:mt-6 md:mt-8 border-x-2 border-purple-800/30 px-5 py-12 xs:p-16 md:rounded-t-xl 
+    max-w-2xl md:max-w-7xl mx-auto hover:shadow-xl hover:shadow-purple-800/80 hover:border-purple-800/80 transition-all duration-300;
+  }
+
   .trending {
     @apply mt-20;
 
