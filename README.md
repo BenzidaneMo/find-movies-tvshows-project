@@ -154,7 +154,7 @@ The app uses the **TMDB API** and **Appwrite** for data fetching and storage. Be
 
 ## Screenshot
 
-![Screenshot](./public/localhost_ScreenShot.png)
+![Screenshot](./public/localhost_ScreenShot.webp)
 
 ---
 ## Folder Structure 📂
