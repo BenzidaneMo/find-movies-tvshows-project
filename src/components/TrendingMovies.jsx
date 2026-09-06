@@ -5,9 +5,10 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
+import MovieCard from './MovieCard';
 
 
-const TrendingMovies = ({ trendingMovies }) => {
+const TrendingMovies = ({ trendingMovies, onSelectMovie }) => {
   const trayArray = ['1','2','3','4','5','6','7','8','9'] // Array to display placeholders when no trending movies are available
   const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth > 480); // State to track if the screen is large enough for navigation buttons to apear
 
@@ -61,23 +62,13 @@ const TrendingMovies = ({ trendingMovies }) => {
         {/* Loop through and render the first 9 trending movies */}
         {trendingMovies && trendingMovies.length > 0 ? trendingMovies.map((movie, i) => (
         <SwiperSlide key={movie.movie_id}>
-          {/* Display the movie's rank/index */}
-          {/* Container for movie poster with hover effect */}
-          <div className='relative flex rounded-md cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105'>
-            {/* Movie poster image */}
-            <img
-              src={movie.poster_url} // Fetch poster image from TMDB
-              alt={movie.movie_name} // Use movie title as alt text
-              className='w-[108.66px] h-[163px] z-10 rounded-md object-cover -ml-3.5'
-            />
-            {/* Overlay div that appears on hover, showing the movie title */}
-            <p className='rank-movies relative right-11/12 z-0 hidden lg:block'>{i + 1}</p>
-            <div
-              className='absolute z-20 overflow-hidden top-0 text-clip w-[108.66px] h-[163px] -ml-3.5 cursor-pointer bg-black opacity-0 rounded-md hover:opacity-70 active:opacity-70 transition-opacity duration-300 ease-in-out text-white'
-            >
-              <h3 className='text-center my-12 text-sm'>{movie.movie_name}</h3>
-            </div>
-          </div>
+          <MovieCard
+            movie={movie}
+            mediaType={movie.media_type}
+            variant="trending"
+            rank={i + 1}
+            onSelect={onSelectMovie}
+          />
         </SwiperSlide>
         )) : trayArray.map((nmb,i) => (
         <SwiperSlide key={i}>

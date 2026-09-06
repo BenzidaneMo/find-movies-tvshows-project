@@ -19,6 +19,8 @@ export const updateSearchCount = async (searchTerm, movie) => {
   const posterUrl = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     : 'https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg';
+  // TMDB /search/multi results always carry a reliable media_type ('movie' or 'tv').
+  const mediaType = movie.media_type === 'tv' ? 'tv' : 'movie';
 
   // 1. PRODUCTION MODE: Supabase
   if (DB_MODE === 'supabase' && supabase) {
@@ -39,6 +41,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
             movie_name: movie.title || movie.name,
             search_term: searchTerm,
             poster_url: posterUrl,
+            media_type: mediaType,
             count: newCount,
             updated_at: new Date().toISOString(),
           },
@@ -60,6 +63,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
         movie_name: movie.title || movie.name,
         search_term: searchTerm,
         poster_url: posterUrl,
+        media_type: mediaType,
       }),
     });
   } catch (error) {
@@ -74,14 +78,24 @@ export const getTrendingMoviesBySearchCount = async () => {
   // 1. PRODUCTION MODE: Supabase
   if (DB_MODE === 'supabase' && supabase) {
     try {
-      const { data, error } = await supabase
+      // media_type may not exist yet on tables created before it was added;
+      // fall back to selecting without it rather than breaking trending.
+      let { data, error } = await supabase
         .from('metrics')
-        .select('movie_id, movie_name, search_term, count, poster_url')
+        .select('movie_id, movie_name, search_term, count, poster_url, media_type')
         .order('count', { ascending: false })
         .limit(9);
 
+      if (error) {
+        ({ data, error } = await supabase
+          .from('metrics')
+          .select('movie_id, movie_name, search_term, count, poster_url')
+          .order('count', { ascending: false })
+          .limit(9));
+      }
+
       if (error) throw error;
-      return data || [];
+      return (data || []).map((row) => ({ media_type: 'movie', ...row }));
     } catch (error) {
       console.error('Supabase Error (Trending):', error.message);
       return [];

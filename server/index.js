@@ -10,9 +10,9 @@ app.use(express.json());
 app.get('/api/movies/trending', async (req, res) => {
   try {
     const query = `
-      SELECT movie_id, movie_name, search_term, count, poster_url 
-      FROM metrics 
-      ORDER BY count DESC 
+      SELECT movie_id, movie_name, search_term, count, poster_url, COALESCE(media_type, 'movie') AS media_type
+      FROM metrics
+      ORDER BY count DESC
       LIMIT 9;
     `;
     const { rows } = await pool.query(query);
@@ -25,21 +25,22 @@ app.get('/api/movies/trending', async (req, res) => {
 
 // POST: Upsert search term and increment count
 app.post('/api/movies/search', async (req, res) => {
-  const { movie_id, movie_name, search_term, poster_url } = req.body;
+  const { movie_id, movie_name, search_term, poster_url, media_type } = req.body;
 
   try {
     const upsertQuery = `
-      INSERT INTO metrics (movie_id, movie_name, search_term, poster_url, count)
-      VALUES ($1, $2, $3, $4, 1)
-      ON CONFLICT (movie_id) 
-      DO UPDATE SET 
+      INSERT INTO metrics (movie_id, movie_name, search_term, poster_url, media_type, count)
+      VALUES ($1, $2, $3, $4, COALESCE($5, 'movie'), 1)
+      ON CONFLICT (movie_id)
+      DO UPDATE SET
         count = metrics.count + 1,
         search_term = EXCLUDED.search_term,
+        media_type = EXCLUDED.media_type,
         updated_at = CURRENT_TIMESTAMP
       RETURNING *;
     `;
 
-    const values = [movie_id, movie_name, search_term, poster_url];
+    const values = [movie_id, movie_name, search_term, poster_url, media_type];
     const { rows } = await pool.query(upsertQuery, values);
     res.json(rows[0]);
   } catch (err) {

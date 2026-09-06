@@ -7,23 +7,10 @@ import Footer from './components/Footer'
 import SearchResults from './components/SearchResults'
 import TrendingMovies from './components/TrendingMovies'
 import PopularMovies from './components/PopularMovies'
+import MovieDetailsModal from './components/MovieDetailsModal'
 // *** SWAPPED APPWRITE FOR LOCAL POSTGRES DB SERVICE ***
 import { updateSearchCount, getTrendingMoviesBySearchCount } from './db';
-
-// Base URL for TMDB API
-const API_URL = 'https://api.themoviedb.org/3'
-// API key loaded from environment variable
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
-
-// Options used for all fetch requests, including headers for authorization
-const APi_OPTIONS = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    // Bearer token authorization using API key
-    Authorization: `Bearer ${API_KEY}`
-  }
-}
+import { fetchDiscoverMovies, searchMulti } from './services/tmdb';
 
 function App() {
   // State to store the search query entered by the user
@@ -57,36 +44,24 @@ function App() {
     It calls the discover endpoint to fetch a list of trending movies.
   */
   useEffect(() => {
-    const fetchDiscoverMovies = async (page = 1) => {
+    const loadDiscoverMovies = async () => {
       try {
-        // Fetch trending movies using the discover endpoint
-        const response = await fetch(`${API_URL}/discover/movie?sort_by=popularity.desc&include_adult=false&language=en-US&page=${page}}`, APi_OPTIONS)
-        const data = await response.json()
-
-        //console.log("the data : ",data)
+        const data = await fetchDiscoverMovies(page)
         // Update state with the fetched trending movies
         setDiscoverMovies(data.results)
         setTotalPages(data.total_pages) // Update total pages state
-        // Log the fetched movies for debugging purposes
-        //console.log(discoverMovies)
-        /*if (page === 1) {
-          const trendingResponse = await fetch(`${API_URL}/trending/all/week?language=en-US`, APi_OPTIONS)
-          const trendingData = await trendingResponse.json()
-          console.log('Trending Movies:', trendingData.results)
-          setTrendingMovies(trendingData.results.slice(0, 9)); // Store the first 9 trending movies and Tv Shows for TrendingMovies
-        }*/
       } catch (error) {
         console.error('Error fetching discover movies:', error)
         // Display an error toast if fetching fails
         toast.error('Error fetching discover movies. Please try again later.')
       }
     }
-    fetchDiscoverMovies(page)
+    loadDiscoverMovies()
   }, [page])
 
 /*
     useEffect hook to fetch trending movies when the component mounts.
-    It calls the getSearchCount function to fetch the search count data from the appwrite database.
+    It calls the getSearchCount function to fetch the search count data from the backend.
 */
   useEffect(() => {
     const getTrendingMovies = async () => {
@@ -96,12 +71,11 @@ function App() {
         setTrendingMovies(searchCount); // Store the first 9 trending movies and Tv Shows for TrendingMovies
       }
       catch (error) {
-        console.error("Error getting trending movies from appwrite :", error)
+        console.error("Error getting trending movies:", error)
       }
     }
     getTrendingMovies()
   }, [])
-  console.log('Trending Movies:', trendingMovies)
 
   /*
     useEffect hook to fetch movies based on the user's search query.
@@ -110,19 +84,17 @@ function App() {
   useEffect(() => {
     const fetchSearchedMovies = async () => {
       try {
-        // Fetch movies matching the search query using the search endpoint
-        const search = await fetch(`${API_URL}/search/multi?query=${encodeURIComponent(debouncedSearchTerm)}&include_adult=false&language=en-US&page=1`, APi_OPTIONS)
-        const searchData = await search.json()
+        // Fetch movies/TV shows matching the search query
+        const searchData = await searchMulti(debouncedSearchTerm)
 
         // Update state with the fetched search results
         setSearchedMovies(searchData.results)
 
         if (searchData.results.length > 0) {
           // Update the search count for the searched movie in the database
-          // Updates PostgreSQL database via local Express endpoint
           await updateSearchCount(debouncedSearchTerm.trim(), searchData.results[0])
 
-          // Automatically refresh trending carousel with updated SQL counts
+          // Automatically refresh trending carousel with updated counts
           const updatedTrending = await getTrendingMoviesBySearchCount();
           setTrendingMovies(updatedTrending);
         }
@@ -132,7 +104,6 @@ function App() {
         toast.error('Error fetching searched movies. Please check your internet connection.')
       }
     }
-    console.log('Searched Movies:', searchedMovies)
 
     // Only fetch movies if the search query is not empty and the search icon is clicked
     if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '' && isSearchClicked) {
@@ -215,6 +186,18 @@ function App() {
     }
   };
 
+  // State for the movie/TV show currently open in the details modal.
+  // { id, mediaType } | null
+  const [selectedMedia, setSelectedMedia] = useState(null)
+
+  // Opens the details modal for a movie or TV show, regardless of which
+  // section (Popular, Search Results, Trending) it was selected from.
+  const handleSelectMovie = (id, mediaType) => {
+    setSelectedMedia({ id, mediaType: mediaType || 'movie' })
+  }
+
+  const handleCloseMovieDetails = () => setSelectedMedia(null)
+
   return (
     <main>
       <title>Find Movies{searchTerm && isSearchClicked ? ` | Searching For : ${searchTerm}`: ''}</title>
@@ -233,18 +216,27 @@ function App() {
             searchTerm={searchTerm}
             isSearchClicked={isSearchClicked}
             searchResultsRef={searchResultsRef}
+            onSelectMovie={handleSelectMovie}
           />
-          <TrendingMovies trendingMovies={trendingMovies} />
-          <PopularMovies 
-          discoverMovies={discoverMovies} 
-          page={page} 
-          LimitPages={LimitPages} 
+          <TrendingMovies trendingMovies={trendingMovies} onSelectMovie={handleSelectMovie} />
+          <PopularMovies
+          discoverMovies={discoverMovies}
+          page={page}
+          LimitPages={LimitPages}
           handleNextPage={handleNextPage}
           handlePreviousPage={handlePreviousPage}
+          onSelectMovie={handleSelectMovie}
           />
         </div>
       </div>
       <Footer />
+      {selectedMedia && (
+        <MovieDetailsModal
+          id={selectedMedia.id}
+          mediaType={selectedMedia.mediaType}
+          onClose={handleCloseMovieDetails}
+        />
+      )}
     </main>
   )
 }

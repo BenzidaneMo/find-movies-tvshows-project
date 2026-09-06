@@ -10,6 +10,7 @@
 - **Search Functionality**: Allows users to search for movies by title and view the results in a grid layout.
 - **Search Tracking**: Tracks user searches and stores the first search result in the Appwrite database with a counter.
 - **Popular Movies with Pagination**: Browse through popular movies with the ability to navigate between pages.
+- **Movie & TV Details Modal**: Click any movie or TV show (in Popular, Search, or Trending) to view a details modal with overview, rating, release date, runtime/seasons, genres, and content rating — without leaving the page.
 - **Responsive Design**: Fully responsive layout optimized for all screen sizes.
 - **Hover Effects**: Interactive hover effects to display additional movie details.
 - **Error Handling**: Displays toast notifications for errors like failed API requests.
@@ -90,12 +91,18 @@ CREATE TABLE metrics (
     search_term VARCHAR(255) NOT NULL,
     count INT DEFAULT 1,
     poster_url TEXT NOT NULL,
+    media_type VARCHAR(10) DEFAULT 'movie',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 3. Create index for fast sorting on search counts
 CREATE INDEX idx_metrics_count ON metrics (count DESC);
+```
+
+If you already have an existing `metrics` table (local Postgres or Supabase) from before movie/TV details support was added, run this migration instead of recreating the table:
+```sql
+ALTER TABLE metrics ADD COLUMN IF NOT EXISTS media_type VARCHAR(10) DEFAULT 'movie';
 ```
 
 ---
@@ -161,6 +168,13 @@ react-project/
 │   │   ├── SearchResults.jsx
 │   │   ├── TrendingMovies.jsx
 │   │   ├── PopularMovies.jsx
+│   │   ├── MovieCard.jsx        # Shared movie/TV card used by all three sections above
+│   │   ├── MovieDetailsModal.jsx # Movie/TV details modal
+│   │   └── Footer.jsx
+│   ├── services/
+│   │   └── tmdb.js         # Centralized TMDB fetch calls + image/genre/certification helpers
+│   ├── hooks/
+│   │   └── useGenreMap.js  # Resolves TMDB genre ids to names
 │   ├── [App.jsx]                                        # Main app component
 |   ├── db.js               # Service abstraction for local REST endpoints
 │   ├── index.css           # Global styles

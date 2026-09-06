@@ -151,6 +151,62 @@
   }
 }
 
+@layer components {
+  .modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm;
+    animation: modal-fade-in 0.2s ease-out;
+  }
+
+  .modal-content {
+    @apply relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-dark-100 shadow-2xl shadow-purple-800/30;
+    animation: modal-scale-in 0.2s ease-out;
+  }
+
+  .modal-close {
+    @apply absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full bg-black/60 text-2xl leading-none text-white cursor-pointer transition-transform duration-200 hover:scale-110 hover:bg-black/80;
+  }
+
+  .modal-backdrop-image {
+    @apply relative h-48 sm:h-64 w-full bg-cover bg-center bg-dark-100;
+  }
+
+  .modal-backdrop-fade {
+    @apply absolute inset-0 bg-linear-to-t from-dark-100 via-dark-100/40 to-transparent;
+  }
+
+  .modal-body {
+    @apply flex flex-col sm:flex-row gap-5 p-5 sm:p-6 sm:-mt-16 relative;
+  }
+
+  .modal-poster {
+    @apply w-32 sm:w-44 rounded-lg shadow-lg mx-auto sm:mx-0 shrink-0 object-cover;
+  }
+
+  .modal-info {
+    @apply flex-1 min-w-0;
+  }
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 @utility text-gradient {
   @apply bg-linear-to-r from-[#D6C7FF] to-[#AB8BFF] bg-clip-text text-transparent;
 }
