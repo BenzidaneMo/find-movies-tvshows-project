@@ -31,11 +31,10 @@ app.post('/api/movies/search', async (req, res) => {
     const upsertQuery = `
       INSERT INTO metrics (movie_id, movie_name, search_term, poster_url, media_type, count)
       VALUES ($1, $2, $3, $4, COALESCE($5, 'movie'), 1)
-      ON CONFLICT (movie_id)
+      ON CONFLICT (movie_id, media_type)
       DO UPDATE SET
         count = metrics.count + 1,
         search_term = EXCLUDED.search_term,
-        media_type = EXCLUDED.media_type,
         updated_at = CURRENT_TIMESTAMP
       RETURNING *;
     `;

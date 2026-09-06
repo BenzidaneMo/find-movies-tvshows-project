@@ -29,6 +29,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
         .from('metrics')
         .select('count')
         .eq('movie_id', movie.id)
+        .eq('media_type', mediaType)
         .maybeSingle();
 
       const newCount = existing ? existing.count + 1 : 1;
@@ -45,7 +46,7 @@ export const updateSearchCount = async (searchTerm, movie) => {
             count: newCount,
             updated_at: new Date().toISOString(),
           },
-          { onConflict: 'movie_id' }
+          { onConflict: 'movie_id,media_type' }
         );
     } catch (error) {
       console.error('Supabase Error (Search):', error.message);

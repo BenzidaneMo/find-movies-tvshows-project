@@ -86,23 +86,26 @@ CREATE DATABASE find_movies_db;
 -- 2. Create the metrics table
 CREATE TABLE metrics (
     id SERIAL PRIMARY KEY,
-    movie_id INT UNIQUE NOT NULL,
+    movie_id INT NOT NULL,
     movie_name VARCHAR(255) NOT NULL,
     search_term VARCHAR(255) NOT NULL,
     count INT DEFAULT 1,
     poster_url TEXT NOT NULL,
     media_type VARCHAR(10) DEFAULT 'movie',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (movie_id, media_type)
 );
 
 -- 3. Create index for fast sorting on search counts
 CREATE INDEX idx_metrics_count ON metrics (count DESC);
 ```
 
-If you already have an existing `metrics` table (local Postgres or Supabase) from before movie/TV details support was added, run this migration instead of recreating the table:
+If you already have an existing `metrics` table (local Postgres or Supabase) from before movie/TV details support was added, run this migration instead of recreating the table. TMDB ids are only unique *within* a media type (a movie and a TV show/anime can share the same numeric id), so a `UNIQUE` constraint on `movie_id` alone lets a searched TV show collide with an unrelated movie (or vice versa) and overwrite its row. Switch to a composite key:
 ```sql
 ALTER TABLE metrics ADD COLUMN IF NOT EXISTS media_type VARCHAR(10) DEFAULT 'movie';
+ALTER TABLE metrics DROP CONSTRAINT IF EXISTS metrics_movie_id_key;
+ALTER TABLE metrics ADD CONSTRAINT metrics_movie_id_media_type_key UNIQUE (movie_id, media_type);
 ```
 
 ---
